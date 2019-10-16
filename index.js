@@ -112,7 +112,7 @@ if ( tracks.length ) {
     srt.push(i + 1, `${ time2stamp(time) } --> ${ time2stamp(nextTime) }`);
     if ( template ) {
       //noinspection JSUnresolvedFunction
-      srt.push(template.replace(/TITLE|ARTIST/g, w => w === 'ARTIST' ? artist : title));
+      srt.push(template.replace(/TITLE|ARTIST/gm, w => w === 'ARTIST' ? artist : title));
     }
     else {
       options.titlefirst ? srt.push(title, artist) : srt.push(artist, title);
