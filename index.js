@@ -6,6 +6,7 @@
 
 'use strict';
 
+const out = o => {process.stderr.write(o + '\r\n');};
 const options = require('commander');
 options
   .name('cue2srt')
@@ -33,14 +34,14 @@ const cuefile = options.args[ 0 ];
 
 let file;
 try {
-  const _err = () => console.error('Sorry, need a VirtualDJ CUE file as input.');
+  const _err = () => out('Sorry, need a VirtualDJ CUE (*.cue) file as input.');
   if ( fs.statSync(cuefile).size > 10485760 ) return _err();  // max 10mb
   file = fs.readFileSync(cuefile, 'utf-8');
   if ( !file.startsWith('PERFORMER') ) return _err();
 }
 catch {
-  console.error('Sorry, could not open this file:');
-  console.error(cuefile);
+  out('Sorry, could not open this file:');
+  out(cuefile);
   return;
 }
 
@@ -70,7 +71,7 @@ lines.forEach(fileLine => {
   else if ( track && line.startsWith('PERFORMER ') ) {  // track artist
     track.artist = line.substr(line.indexOf(' ') + 1).replace(/"/g, '');
   }
-  else if ( track && line.startsWith('INDEX ') ) {  // time stamp (VDJ seem to always set last segment to 00....)
+  else if ( track && line.startsWith('INDEX ') ) {  // time stamp (VDJ seem to always set last segment to 00...)
     track.time = stamp2time(line.substr(line.lastIndexOf(' ') + 1));
   }
 });
@@ -80,7 +81,7 @@ if ( track ) tracks.push(track);
 
 // Build SRT file
 if ( tracks.length ) {
-  console.error(`Parsed ${ tracks.length } tracks.`);
+  out(`Parsed ${ tracks.length } tracks.`);
 
   // Load template file if specified.
   let template = null;
@@ -90,7 +91,7 @@ if ( tracks.length ) {
         .replace(/\r/gm, '').split('\n').filter(l => !l.startsWith('#')).join('\r\n');
     }
     catch {
-      console.error('Could not load template file. Aborting...');
+      out('Could not load template file. Aborting...');
       return;
     }
   }
@@ -107,7 +108,7 @@ if ( tracks.length ) {
     const nextTime = trackDuration >= 0 ? time + trackDuration : ((nextTrack ? nextTrack.time : duration) + trackOffset - trackTrim);
     const artist = options.ucartist ? track.artist.toUpperCase() : track.artist;
     const title = checkParenthesis(options.uctitle ? track.title.toUpperCase() : track.title, options.ignorepar);
-    if ( nextTime - time < 0.1 ) console.error(`Warning: track ${ i + 1 } "${ title }" duration too short.`);
+    if ( nextTime - time < 0.1 ) out(`Warning: track ${ i + 1 } "${ title }" duration too short.`);
 
     srt.push(i + 1, `${ time2stamp(time) } --> ${ time2stamp(nextTime) }`);
     if ( template ) {
@@ -123,7 +124,7 @@ if ( tracks.length ) {
 
   // save out file
   if ( !options.pipe && !options.overwrite && fs.existsSync(outFilename) ) {
-    return console.error('Output file already exists. Aborting... Also see option "-x, --overwrite".');
+    return out('Output file already exists. Aborting... Also see option "-x, --overwrite".');
   }
 
   try {
@@ -132,16 +133,16 @@ if ( tracks.length ) {
     }
     else {
       fs.writeFileSync(outFilename, srt.join('\r\n'));
-      console.error(`Output: ${ outFilename }`);
+      out(`Output: ${ outFilename }`);
     }
-    console.error('Done!');
+    out('Done!');
   }
   catch(err) {
-    console.error(`Could not save to file: ${ outFilename }\n${ err }`);
+    out(`Could not save to file: ${ outFilename }\n${ err }`);
   }
 }
 else {
-  console.error('No tracks to build SRT from. Nothing to save...');
+  out('No tracks to build SRT from. Nothing to save...');
 }
 
 function getSRTFileName(path) {
