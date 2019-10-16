@@ -109,6 +109,12 @@ line below):
 This will install the files from this repository. Once finished, you'll be able
 to use it right away as described above.
 
+To Enable CUE File In VirtualDJ
+-------------------------------
+
+Go to option and set option "`recordWriteCueFile`" to `Yes`.
+
+Now a .cue file will be saved next to your recorded mix file.
 
 License
 -------
