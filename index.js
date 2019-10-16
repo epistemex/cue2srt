@@ -8,7 +8,8 @@
 
 const options = require('commander');
 options
-  .usage('[options] incuefile')
+  .name('cue2srt')
+  .usage('[options] cuefile [options]')
   .description('Converts VirtualDJ CUE files into SRT video subtitles.')
   .version(require('./package.json').version, '-v, --version')
   .option('-o, --output <path>', 'Specify a path for file that overrides default.')
@@ -22,22 +23,24 @@ options
   .option('--ignorepar', 'Ignore content in parenthesis.')
   .option('--template <path>', 'Use template file for title and artist. Overrides title/artist options.')
   .option('-x, --overwrite', 'Overwrite output file if already exists.')
+  .option('--pipe', 'Output to pipe (STDOUT). Overrides output file.')
   .parse(process.argv);
 
 if ( !options.args.length ) return options.outputHelp();
 
 const fs = require('fs');
+const cuefile = options.args[ 0 ];
 
 let file;
 try {
-  const _err = () => console.log('Sorry, need a VirtualDJ CUE file as input.');
-  if ( fs.statSync(options.args[ 0 ]).size > 10485760 ) return _err();  // max 10mb
-  file = fs.readFileSync(options.args[ 0 ], 'utf-8');
+  const _err = () => console.error('Sorry, need a VirtualDJ CUE file as input.');
+  if ( fs.statSync(cuefile).size > 10485760 ) return _err();  // max 10mb
+  file = fs.readFileSync(cuefile, 'utf-8');
   if ( !file.startsWith('PERFORMER') ) return _err();
 }
 catch {
-  console.log('Sorry, could not open this file:');
-  console.log(options.args[ 0 ]);
+  console.error('Sorry, could not open this file:');
+  console.error(cuefile);
   return;
 }
 
@@ -77,7 +80,7 @@ if ( track ) tracks.push(track);
 
 // Build SRT file
 if ( tracks.length ) {
-  console.log(`Parsed ${ tracks.length } tracks.`);
+  console.error(`Parsed ${ tracks.length } tracks.`);
 
   // Load template file if specified.
   let template = null;
@@ -87,7 +90,7 @@ if ( tracks.length ) {
         .replace(/\r/gm, '').split('\n').filter(l => !l.startsWith('#')).join('\r\n');
     }
     catch {
-      console.log('Could not load template file. Aborting...');
+      console.error('Could not load template file. Aborting...');
       return;
     }
   }
@@ -104,7 +107,7 @@ if ( tracks.length ) {
     const nextTime = trackDuration >= 0 ? time + trackDuration : ((nextTrack ? nextTrack.time : duration) + trackOffset - trackTrim);
     const artist = options.ucartist ? track.artist.toUpperCase() : track.artist;
     const title = checkParenthesis(options.uctitle ? track.title.toUpperCase() : track.title, options.ignorepar);
-    if ( nextTime - time < 0.1 ) console.log(`Warning: track ${ i + 1 } "${ title }" duration too short.`);
+    if ( nextTime - time < 0.1 ) console.error(`Warning: track ${ i + 1 } "${ title }" duration too short.`);
 
     srt.push(i + 1, `${ time2stamp(time) } --> ${ time2stamp(nextTime) }`);
     if ( template ) {
@@ -119,21 +122,26 @@ if ( tracks.length ) {
   });
 
   // save out file
-  if ( !options.overwrite && fs.existsSync(outFilename) ) {
-    return console.log('Output file already exists. Aborting... Also see option "-x, --overwrite".');
+  if ( !options.pipe && !options.overwrite && fs.existsSync(outFilename) ) {
+    return console.error('Output file already exists. Aborting... Also see option "-x, --overwrite".');
   }
 
   try {
-    fs.writeFileSync(outFilename, srt.join('\r\n'));
-    console.log(`Output: ${ outFilename }`);
-    console.log('Saved - Done!');
+    if ( options.pipe ) {
+      process.stdout.write(srt.join('\r\n'));
+    }
+    else {
+      fs.writeFileSync(outFilename, srt.join('\r\n'));
+      console.error(`Output: ${ outFilename }`);
+    }
+    console.error('Done!');
   }
   catch(err) {
-    console.log(`Could not save to file: ${ outFilename }\n${ err }`);
+    console.error(`Could not save to file: ${ outFilename }\n${ err }`);
   }
 }
 else {
-  console.log('No tracks to build SRT from. Nothing to save...');
+  console.error('No tracks to build SRT from. Nothing to save...');
 }
 
 function getSRTFileName(path) {
@@ -155,11 +163,10 @@ function stamp2time(st) {
 
 function time2stamp(time) {
   function pad2(n) {return n < 10 ? '0' + n : '' + n;}
-
   return pad2((time / 3600) | 0) + ':' + pad2((time / 60 % 60) | 0) + ':' + pad2((time % 60) | 0) + ',000';
 }
 
 function checkParenthesis(txt, remove) {
-  txt = txt.trim();
+  txt = txt.trim().replace(/\[/g, '(');
   return remove && !txt.startsWith('(') ? txt.split('(')[ 0 ].trim() : txt;
 }
