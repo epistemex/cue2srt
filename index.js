@@ -101,6 +101,7 @@ if ( tracks.length ) {
   const trackDelay = parseFloat(options.delay);
   const trackTrim = parseFloat(options.trim);
   let srt = [];
+  let srtIndex = 1;
 
   tracks.forEach((track, i) => {
     const time = track.time + trackOffset + trackDelay;
@@ -110,7 +111,7 @@ if ( tracks.length ) {
     const title = checkParenthesis(options.uctitle ? track.title.toUpperCase() : track.title, options.ignorepar);
     if ( nextTime - time < 0.1 ) out(`Warning: track ${ i + 1 } "${ title }" duration too short.`);
 
-    srt.push(i + 1, `${ time2stamp(time) } --> ${ time2stamp(nextTime) }`);
+    srt.push(srtIndex++, `${ time2stamp(time) } --> ${ time2stamp(nextTime) }`);
     if ( template ) {
       //noinspection JSUnresolvedFunction
       srt.push(template.replace(/TITLE|ARTIST/gm, w => w === 'ARTIST' ? artist : title));

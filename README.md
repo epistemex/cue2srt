@@ -96,7 +96,7 @@ line below):
 
     npm i -g silverspex/cue2srt
 
-This will install the files from this repository. once finished, you'll be able
+This will install the files from this repository. Once finished, you'll be able
 to use it right away as described above.
 
 
