@@ -3,6 +3,10 @@ cue2srt
 
 Converts VirtualDJ CUE files to SRT subtitle files for video DJs.
 
+If you have recorded your video mix and want to play it back using media players
+such as VLC, or a media server, a subtitle file can be helpful to optionally display
+artist and title of the current track playing using its subtitle feature (avoiding
+having to burn it into the video itself).
 
 Usage
 -----
@@ -37,9 +41,9 @@ ending (`--delay` is the long form of `-d`):
 
 To correct a time difference you can use the `--offset` option:
 
-    cue2srt --offset 0.7 mymix.cue
+    cue2srt --offset -0.7 mymix.cue
 
-This delays the subtitles 0.7 seconds.
+This offsets the subtitles -0.7 seconds.
 
 **Formatting:**
 
@@ -62,11 +66,12 @@ Also notice that options can come in any order.
 You can define a template file that allow for advanced formatting of text (assuming
 your media player supports formatted SRT files). An example template file can look like:
 
+    # This is a comment line - will be ignored in output.
     <font color="#ff9900"><i>TITLE</i></font>
     <font color="#21A3C5">ARTIST</font>
 
-where the TITLE and ARTIST keywords will be replaced with actual artist and title from track.
-Comments (lines starting with #) are allowed as well. 
+where the `TITLE` and `ARTIST` keywords will be replaced with actual artist and title from
+track. Comments (lines starting with `#`) are allowed as well. 
 
 Then simply specify the path to the template file:
 
@@ -85,6 +90,11 @@ or process the content by piping it into a post-processor:
 
     cue2srt mymix.cue --pipe | somepostprocessor.exe
 
+TODOs
+-----
+
+- [ ] Support "bumper mode"
+- [ ] Option to output WebVTT compatible subtitle format 
 
 Requirements
 ------------
@@ -105,5 +115,5 @@ License
 
 Copyright (c) 2019 Silverspex
 
-You may use this software for your own personal use (home or commercially).
+You may use this software for your own personal use (home or professionally).
 You may not sell, lease or rent out this software, or use it for public services.
