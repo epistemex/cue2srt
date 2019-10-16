@@ -1,0 +1,13 @@
+# EXAMPLE TEMPLATE FILE
+#
+# Lines starting with # are comment lines and will be removed.
+# The keyword TITLE (upper-case) will be replaced with actual title of track.
+# The keyword ARTIST (upper-case) will be replaced with actual artist of track.
+# If HTML tags works depends entirely on the software reading the SRT file,
+# for example, if may work in VLC but not in simpler software. Use at own risk.
+#
+# Also notice that the last line is not an empty line. cue2srt will insert a
+# blank line automatically.
+#
+<font color="#ff9900"><i>TITLE</i></font>
+<font color="#21A3C5">ARTIST</font>

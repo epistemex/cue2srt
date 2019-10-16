@@ -1,0 +1,21 @@
+{
+  "name": "cue2srt",
+  "version": "1.0.0-beta",
+  "description": "Convert VirtualDJ CUE files to SRT subtitle files.",
+  "bin": "index.js",
+  "private": true,
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [
+    "VirtualDJ",
+    "cue",
+    "srt",
+    "subtitles"
+  ],
+  "author": "Silverspex",
+  "license": "Custom",
+  "dependencies": {
+    "commander": "^3.0.2"
+  }
+}
