@@ -9,5 +9,10 @@
 # Also notice that the last line is not an empty line. cue2srt will insert a
 # blank line automatically.
 #
+# The next line is to optionally style WebVTT formatted subtitles (option --vtt)
+# (one per template), and starts with "# VTT:" or "#VTT:" -
+#
+# VTT: align:middle line:90%
+#
 <font color="#ff9900"><i>TITLE</i></font>
 <font color="#21A3C5">ARTIST</font>

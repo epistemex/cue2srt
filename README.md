@@ -68,6 +68,9 @@ To remove content in parenthesis for titles:
     
 Also notice that options can come in any order.
 
+You can also output the subtitles as a WebVTT file using the option `--vtt`
+which uses the extension '.vtt' instead of '.srt'.
+
 **Templates:**
 
 You can define a template file that allow for advanced formatting of text (assuming
@@ -85,6 +88,13 @@ Then simply specify the path to the template file:
     cue2srt --template mytemplate.txt mymix.cue
 
 See included demo template file for details.
+
+When outputting WebVTT subtitles you can optionally add block styling using a comment
+anywhere in the template file starting with "# VTT:" or "#VTT:" - example:
+
+    # VTT: align:center
+
+This will be appended to the time range.
 
 **Pipes**
 

@@ -25,6 +25,7 @@ options
   .option('--ignorepar', 'Ignore content in parenthesis.')
   .option('--template <path>', 'Use template file for title and artist. Overrides title/artist options.')
   .option('-x, --overwrite', 'Overwrite output file if already exists.')
+  .option('--vtt', 'Output as WebVTT formatted subtitle file.')
   .option('--pipe', 'Output to pipe (STDOUT). Overrides output file.')
   .parse(process.argv);
 
@@ -86,10 +87,24 @@ if ( tracks.length ) {
 
   // Load template file if specified.
   let template = '';
+  let vttStyle = '';
+
   if ( options.template ) {
     try {
-      template = fs.readFileSync(options.template, 'utf-8')
-        .replace(/\r/gm, '').split('\n').filter(l => !l.startsWith('#')).join('\r\n');
+      const file = fs.readFileSync(options.template, 'utf-8').replace(/\r/gm, '').split('\n');
+
+      // parse lines, remove comments
+      template = file.filter(l => !l.startsWith('#')).join('\r\n');
+
+      // get VTT style
+      if ( options.vtt ) {
+        for(let line of file) {
+          if ( line.replace(/ /g, '').startsWith('#VTT:') ) {
+            vttStyle = (line.split('VTT:')[ 1 ] || '').trim();
+            break;
+          }
+        }
+      }
     }
     catch {
       out('Could not load template file. Aborting...');
@@ -101,8 +116,12 @@ if ( tracks.length ) {
   const trackOffset = parseFloat(options.offset);
   const trackDelay = parseFloat(options.delay);
   const trackTrim = parseFloat(options.trim);
+  const isVTT = options.vtt;
+
   let srt = [];
   let srtIndex = 1;
+
+  if ( isVTT ) srt.push('WEBVTT - Created by cue2srt / silverspex', '');
 
   tracks.forEach((track, i) => {
     const time = track.time + trackOffset + trackDelay;
@@ -125,7 +144,7 @@ if ( tracks.length ) {
     }
 
     function _srt(time, nextTime) {
-      srt.push(srtIndex++, `${ time2stamp(time) } --> ${ time2stamp(nextTime) }`);
+      srt.push(srtIndex++, `${ time2stamp(time, isVTT) } --> ${ time2stamp(nextTime, isVTT) }${ isVTT && vttStyle.length ? ' ' + vttStyle : '' }`);
       if ( template.length ) {
         srt.push(template.replace(/TITLE|ARTIST/gm, w => w === 'ARTIST' ? artist : title));
       }
@@ -161,7 +180,7 @@ else {
 
 function getSRTFileName(path) {
   const dot = path.lastIndexOf('.');
-  return (dot < 0 ? path : path.substr(0, dot)) + '.srt';
+  return (dot < 0 ? path : path.substr(0, dot)) + (options.vtt ? '.vtt' : '.srt');
 }
 
 function stamp2time(st) {
@@ -176,9 +195,10 @@ function stamp2time(st) {
   else return 0;
 }
 
-function time2stamp(time) {
+function time2stamp(time, vtt = false) {
   function pad2(n) {return n < 10 ? '0' + n : '' + n;}
-  return pad2((time / 3600) | 0) + ':' + pad2((time / 60 % 60) | 0) + ':' + pad2((time % 60) | 0) + ',000';
+
+  return pad2((time / 3600) | 0) + ':' + pad2((time / 60 % 60) | 0) + ':' + pad2((time % 60) | 0) + (vtt ? '.' : ',') + '000';
 }
 
 function checkParenthesis(txt, remove) {
