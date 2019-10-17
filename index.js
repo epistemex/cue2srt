@@ -18,6 +18,7 @@ options
   .option('-t, --trim <seconds>', 'Hide title number of seconds before track finished.', 5)
   .option('--duration <seconds>', 'Duration of title, in seconds (overrides trim). -1 for complete track.', -1)
   .option('--offset <seconds>', 'Positive or negative offset in seconds for time correction.', 0)
+  .option('-b, --bumpers', 'Show title at start (delay) and end (trim) duration time, but not in middle.')
   .option('--ucartist', 'Upper-case artist')
   .option('--uctitle', 'Upper-case title')
   .option('--titlefirst', 'Switch order, title on top.')
@@ -40,7 +41,7 @@ try {
   if ( !file.startsWith('PERFORMER') ) return _err();
 }
 catch {
-  out('Sorry, could not open this file:');
+  out('Sorry, invalid path or invalid cue file.');
   out(cuefile);
   return;
 }
@@ -84,7 +85,7 @@ if ( tracks.length ) {
   out(`Parsed ${ tracks.length } tracks.`);
 
   // Load template file if specified.
-  let template = null;
+  let template = '';
   if ( options.template ) {
     try {
       template = fs.readFileSync(options.template, 'utf-8')
@@ -111,16 +112,28 @@ if ( tracks.length ) {
     const title = checkParenthesis(options.uctitle ? track.title.toUpperCase() : track.title, options.ignorepar);
     if ( nextTime - time < 0.1 ) out(`Warning: track ${ i + 1 } "${ title }" duration too short.`);
 
-    srt.push(srtIndex++, `${ time2stamp(time) } --> ${ time2stamp(nextTime) }`);
-    if ( template ) {
-      //noinspection JSUnresolvedFunction
-      srt.push(template.replace(/TITLE|ARTIST/gm, w => w === 'ARTIST' ? artist : title));
+    _srt(time, nextTime);
+
+    if ( options.bumpers && trackDuration > 0 ) {
+      const _nextTime = ((nextTrack ? nextTrack.time : duration) + trackOffset - trackTrim - trackDuration);
+      if ( _nextTime <= nextTime ) {
+        out(`Warning: track ${ i + 1 } too short; ignoring end bumper.`);
+      }
+      else {
+        _srt(_nextTime, _nextTime + trackDuration);
+      }
     }
-    else {
-      options.titlefirst ? srt.push(title, artist) : srt.push(artist, title);
+
+    function _srt(time, nextTime) {
+      srt.push(srtIndex++, `${ time2stamp(time) } --> ${ time2stamp(nextTime) }`);
+      if ( template.length ) {
+        srt.push(template.replace(/TITLE|ARTIST/gm, w => w === 'ARTIST' ? artist : title));
+      }
+      else {
+        options.titlefirst ? srt.push(title, artist) : srt.push(artist, title);
+      }
+      srt.push('');
     }
-    srt.push('');
-    // todo consider "bumper mode": shows title at start and end (with duration), but not in the "middle".
   });
 
   // save out file
