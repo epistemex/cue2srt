@@ -114,7 +114,7 @@ if ( tracks.length ) {
 
     _srt(time, nextTime);
 
-    if ( options.bumpers && trackDuration > 0 ) {
+    if ( options.bumpers && trackDuration > 0.1 ) {
       const _nextTime = ((nextTrack ? nextTrack.time : duration) + trackOffset - trackTrim - trackDuration);
       if ( _nextTime <= nextTime ) {
         out(`Warning: track ${ i + 1 } too short; ignoring end bumper.`);
