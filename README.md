@@ -45,6 +45,13 @@ To correct a time difference you can use the `--offset` option:
 
 This offsets the subtitles -0.7 seconds.
 
+The `--bumpers` option will split the title into two segments, one shown in the beginning
+at delay and duration, the second at the end trim time from end and duration:
+
+    cue2srt --duration 9 --bumpers mymix.cue
+
+If this result in overlapping titles the end segment is ignored.
+
 **Formatting:**
 
 To upper-case for example artist name:
