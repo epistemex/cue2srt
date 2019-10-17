@@ -26,6 +26,7 @@ options
   .option('--template <path>', 'Use template file for title and artist. Overrides title/artist options.')
   .option('-x, --overwrite', 'Overwrite output file if already exists.')
   .option('--vtt', 'Output as WebVTT formatted subtitle file.')
+  .option('--vttstyle <WebVTTstyleString>', 'Use this style for subtitle blocks in vtt files. Overrides template style.')
   .option('--pipe', 'Output to pipe (STDOUT). Overrides output file.')
   .parse(process.argv);
 
@@ -87,7 +88,7 @@ if ( tracks.length ) {
 
   // Load template file if specified.
   let template = '';
-  let vttStyle = '';
+  let vttStyle = options.vttstyle || '';
 
   if ( options.template ) {
     try {
@@ -97,7 +98,7 @@ if ( tracks.length ) {
       template = file.filter(l => !l.startsWith('#')).join('\r\n');
 
       // get VTT style
-      if ( options.vtt ) {
+      if ( options.vtt && !vttStyle.length ) {
         for(let line of file) {
           if ( line.replace(/ /g, '').startsWith('#VTT:') ) {
             vttStyle = (line.split('VTT:')[ 1 ] || '').trim();

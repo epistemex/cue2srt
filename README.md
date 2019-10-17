@@ -69,7 +69,9 @@ To remove content in parenthesis for titles:
 Also notice that options can come in any order.
 
 You can also output the subtitles as a WebVTT file using the option `--vtt`
-which uses the extension '.vtt' instead of '.srt'.
+which uses the extension '.vtt' instead of '.srt'. There is also `--vttstyle <style>`
+which can be used to format WebVTT subtitle blocks if not using templates (or it can
+be used to override styles defined in a template).
 
 **Templates:**
 
