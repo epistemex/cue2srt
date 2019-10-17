@@ -112,8 +112,8 @@ or process the content by piping it into a post-processor:
 TODOs
 -----
 
-- [ ] Support "bumper mode"
-- [ ] Option to output WebVTT compatible subtitle format 
+- [x] Support "bumper mode"
+- [x] Option to output WebVTT compatible subtitle format 
 
 Requirements
 ------------
