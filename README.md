@@ -1,12 +1,14 @@
 cue2srt
 =======
 
-Converts VirtualDJ CUE files to SRT subtitle files for video DJs.
+Converts VirtualDJ CUE files to SRT (or WebVTT) subtitle files for video DJs.
 
 If you have recorded your video mix and want to play it back using media players
 such as VLC, or a media server, a subtitle file can be helpful to optionally display
 artist and title of the current track playing using its subtitle feature (avoiding
 having to burn it into the video itself).
+
+[![Made for VirtualDJ](https://i.imgur.com/4jQVHVi.png)](https://virtualdj.com/)
 
 Usage
 -----
@@ -109,14 +111,8 @@ or process the content by piping it into a post-processor:
 
     cue2srt mymix.cue --pipe | somepostprocessor.exe
 
-TODOs
------
-
-- [x] Support "bumper mode"
-- [x] Option to output WebVTT compatible subtitle format 
-
-Requirements
-------------
+Requirements & Installation
+---------------------------
 
 Install [Node.js](https://nodejs.org/en/) v12 or newer for your platform (Windows,
 MacOS, Linux). The installation comes with the NPM tool (a package manager).
@@ -128,12 +124,19 @@ line below):
 This will install the files from this repository. Once finished, you'll be able
 to use it right away as described above.
 
+Test by typing the following in the CLI (command prompt) and hit enter:
+
+    cue2srt
+
 To Enable CUE File In VirtualDJ
 -------------------------------
 
-Go to option and set option "`recordWriteCueFile`" to `Yes`.
+Go to options in VirtualDJ and look for (paste into search bar) "`recordWriteCueFile`"
+ which you then set to `Yes`.
 
-Now a .cue file will be saved next to your recorded mix file.
+Now a `.cue` file will be saved next to your recorded mix file.
+
+![VirtualDJ options](https://i.imgur.com/R1HLJ1W.jpg)
 
 License
 -------

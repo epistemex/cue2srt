@@ -38,7 +38,7 @@ const cuefile = options.args[ 0 ];
 let file;
 try {
   const _err = () => out('Sorry, need a VirtualDJ CUE (*.cue) file as input.');
-  if ( fs.statSync(cuefile).size > 10485760 ) return _err();  // max 10mb
+  if ( fs.statSync(cuefile).size > 1 << 20 ) return _err();  // max 1 mb
   file = fs.readFileSync(cuefile, 'utf-8');
   if ( !file.startsWith('PERFORMER') ) return _err();
 }
@@ -48,7 +48,7 @@ catch {
   return;
 }
 
-const outFilename = options.output || getSRTFileName(options.args[ 0 ]);
+const outFilename = options.output || getSRTFileName(cuefile);
 const lines = file.split('\n');
 const tracks = [];
 
