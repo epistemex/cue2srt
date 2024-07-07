@@ -3,12 +3,16 @@ cue2srt
 
 Converts VirtualDJ CUE files to SRT (or WebVTT) subtitle files for video DJs.
 
-If you have recorded your video mix and want to play it back using media players
-such as VLC, or a media server, a subtitle file can be helpful to optionally display
-artist and title of the current track playing using its subtitle feature (avoiding
-having to burn it into the video itself).
+If you have recorded your video mix and want to play it back using media players such as VLC, or a
+media server, a subtitle file can be helpful to optionally display artist and title of the current
+track playing using its subtitle feature (avoiding having to burn it into the video itself).
 
 [![Made for VirtualDJ](https://i.imgur.com/4jQVHVi.png)](https://virtualdj.com/)
+
+_Help keep the project alive by supporting the developer:_
+
+[![PayPalMe](https://github.com/epistemex/transformation-matrix-js/assets/70324091/04203267-58f0-402b-9589-e2dee6e7c510)](https://paypal.me/KenNil)
+
 
 Usage
 -----
@@ -64,7 +68,7 @@ You can swap order of artist and title line using:
 
     cue2srt mymix.cue --titlefirst
 
-To remove content in parenthesis for titles:
+To remove content in parentheses for titles:
 
     cue2srt --ignorepar mymix.cue
     
@@ -119,7 +123,7 @@ MacOS, Linux). The installation comes with the NPM tool (a package manager).
 After installing Node.js, open the CLI/command shell and type (or copy paste the
 line below):
 
-    npm i -g silverspex/cue2srt
+    npm i -g https://github.com/epistemex/cue2srt
 
 This will install the files from this repository. Once finished, you'll be able
 to use it right away as described above.
@@ -141,7 +145,9 @@ Now a `.cue` file will be saved next to your recorded mix file.
 License
 -------
 
-Copyright (c) 2019 Silverspex
+Copyright (c) 2019, 2024 epistemex
 
-You may use this software for your own personal use (home or professionally).
-You may not sell, lease or rent out this software, or use it for public services.
+You may use this software for your own personal use (home or professionally). You may not sell,
+lease or rent out this software, or use it for public services.
+
+![Epistemex](https://i.imgur.com/GP6Q3v8.png)

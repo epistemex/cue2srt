@@ -14,7 +14,7 @@
     "webvtt",
     "subtitles"
   ],
-  "author": "Silverspex",
+  "author": "epistemex",
   "license": "Custom",
   "dependencies": {
     "commander": "^3.0.2"

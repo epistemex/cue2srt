@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 /**************************************
  *  cue2srt
- *  Copyright (c) 2019 Silverspex
+ *  Copyright (c) 2019, 2024 epistemex
  *************************************/
 
 'use strict';
